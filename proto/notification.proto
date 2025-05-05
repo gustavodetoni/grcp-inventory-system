@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package notification;
+
+service NotificationService {
+  rpc StreamLowStock(stream LowStockAlert) returns (Ack);
+}
+
+message LowStockAlert {
+  string productId = 1;
+  string name = 2;
+  int32 quantity = 3;
+}
+
+message Ack {
+  string status = 1;
+}

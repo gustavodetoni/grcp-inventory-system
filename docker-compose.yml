@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  inventory-service:
+    build: ./services/inventory-service
+    ports:
+      - "50051:50051"
+    volumes:
+      - ./proto:/app/proto
+    working_dir: /app
+    command: npx ts-node src/server.ts
+
+  order-service:
+    build: ./services/order-service
+    ports:
+      - "50052:50052"
+    depends_on:
+      - inventory-service
+    volumes:
+      - ./proto:/app/proto
+    working_dir: /app
+    command: npx ts-node src/server.ts
+
+  notification-service:
+    build: ./services/notification-service
+    ports:
+      - "50053:50053"
+    volumes:
+      - ./proto:/app/proto
+    working_dir: /app
+    command: npx ts-node src/server.ts

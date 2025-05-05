@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package inventory;
+
+service InventoryService {
+  rpc CheckStock(CheckStockRequest) returns (CheckStockResponse);
+  rpc UpdateStock(UpdateStockRequest) returns (UpdateStockResponse);
+  rpc ListLowStockProducts(Empty) returns (LowStockProductsResponse);
+}
+
+message CheckStockRequest {
+  string productId = 1;
+}
+
+message CheckStockResponse {
+  bool inStock = 1;
+  int32 quantityAvailable = 2;
+}
+
+message UpdateStockRequest {
+  string productId = 1;
+  int32 quantity = 2;
+}
+
+message UpdateStockResponse {
+  bool success = 1;
+}
+
+message Empty {}
+
+message Product {
+  string productId = 1;
+  string name = 2;
+  int32 quantity = 3;
+}
+
+message LowStockProductsResponse {
+  repeated Product products = 1;
+}
