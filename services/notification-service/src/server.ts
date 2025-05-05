@@ -3,7 +3,7 @@ import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import { orderController } from './orderController';
 
-const PROTO_PATH = path.join(__dirname, '../../proto/order.proto');
+const PROTO_PATH = path.resolve('proto/order.proto');
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
@@ -20,5 +20,5 @@ server.addService(orderPackage.OrderService.service, orderController);
 
 const PORT = 50052;
 server.bindAsync(`0.0.0.0:${PORT}`, grpc.ServerCredentials.createInsecure(), () => {
-  console.log(`Order service is running: http://localhost:${PORT}`);
+  console.log(`Notification service is running: notification-service:${PORT}`);
 });

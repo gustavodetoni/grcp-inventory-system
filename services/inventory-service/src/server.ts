@@ -3,7 +3,7 @@ import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
 import { inventoryController } from './inventoryController';
 
-const PROTO_PATH = path.join(__dirname, '../../proto/inventory.proto');
+const PROTO_PATH = path.resolve('proto/inventory.proto')
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
@@ -21,5 +21,5 @@ server.addService(inventoryPackage.InventoryService.service, inventoryController
 
 const PORT = 50051;
 server.bindAsync(`0.0.0.0:${PORT}`, grpc.ServerCredentials.createInsecure(), () => {
-  console.log(`Inventory service is runnig: http://localhost:${PORT}`);
+  console.log(`Inventory service is runnig: inventory-service:${PORT}`);
 });

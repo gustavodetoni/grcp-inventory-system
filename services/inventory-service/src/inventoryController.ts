@@ -6,7 +6,7 @@ import { PrismaClient } from '@prisma/client';
 
 export const prisma = new PrismaClient();
 
-const NOTIFICATION_PROTO_PATH = path.join(__dirname, '../../proto/notification.proto');
+const NOTIFICATION_PROTO_PATH = path.resolve('proto/notification.proto');
 const notificationDef = protoLoader.loadSync(NOTIFICATION_PROTO_PATH, {
   keepCase: true,
   longs: String,
@@ -18,11 +18,9 @@ const notificationDef = protoLoader.loadSync(NOTIFICATION_PROTO_PATH, {
 const notificationProto = grpc.loadPackageDefinition(notificationDef) as any;
 
 const notificationClient = new notificationProto.notification.NotificationService(
-  'notification-service:50053', 
+  'notification-service:50053',
   grpc.credentials.createInsecure()
 );
-
-const alertStream = notificationClient.StreamLowStock();
 
 export const inventoryController = {
   CheckStock: async (
@@ -53,13 +51,23 @@ export const inventoryController = {
       });
 
       if (updated.quantity < 10) {
+        const alertStream = notificationClient.StreamLowStock((err: grpc.ServiceError | null, ack: any) => {
+          if (err) {
+            console.error("Erro no stream:", err);
+          } else {
+            console.log("Ack do stream:", ack);
+          }
+        });
+
         alertStream.write({
           productId: updated.id,
           name: updated.name,
           quantity: updated.quantity
         });
+
+        alertStream.end(); 
       }
-      
+
       callback(null, { success: true });
     } else {
       callback(null, { success: false });
