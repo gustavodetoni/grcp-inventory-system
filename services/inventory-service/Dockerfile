@@ -14,4 +14,4 @@ RUN npx prisma generate
 
 COPY . .
 
-CMD [ "npx", "ts-node", "src/server.ts" ]
+CMD npx prisma migrate deploy && npx ts-node src/server.ts

@@ -6,6 +6,7 @@ services:
     container_name: inventory-service
     ports:
       - "50051:50051"
+      - "5555:5555"
     depends_on:
       - notification-service
     volumes:
@@ -13,7 +14,6 @@ services:
       - ./services/inventory-service/prisma:/app/prisma
       - inventory-db:/app/dev-db
     working_dir: /app
-    command: npx ts-node src/server.ts
     environment:
       - DATABASE_URL=file:/app/dev-db/dev.db
 
@@ -41,3 +41,4 @@ services:
 
 volumes:
   inventory-db:
+    driver: local

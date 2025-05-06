@@ -13,7 +13,7 @@ const packageDef = protoLoader.loadSync(INVENTORY_PROTO_PATH, {
 });
 const inventoryProto = grpc.loadPackageDefinition(packageDef) as any;
 const inventoryClient = new inventoryProto.inventory.InventoryService(
-  'localhost:50051', grpc.credentials.createInsecure()
+  'inventory-service:50051', grpc.credentials.createInsecure()
 );
 
 export const orderController = {
@@ -25,7 +25,7 @@ export const orderController = {
 
     inventoryClient.CheckStock({ productId }, (err: any, res: any) => {
       if (err) {
-        return callback(null, { success: false, message: 'Erro ao verificar estoque' });
+        return callback(err, { success: false, message: 'Erro ao verificar estoque' });
       }
 
       if (!res.inStock || res.quantityAvailable < quantity) {

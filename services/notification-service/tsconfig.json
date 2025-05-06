@@ -6,5 +6,5 @@
     "esModuleInterop": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "../order-service/src/orderController.ts", "../order-service/src/server.ts"]
 }

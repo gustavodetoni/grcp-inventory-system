@@ -1,37 +1,24 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';
+import { orderController } from './orderController';
 
-const PROTO_PATH = path.resolve('proto/notification.proto');
+const PROTO_PATH = path.resolve('proto/order.proto');
 
 const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   keepCase: true,
   longs: String,
   enums: String,
   defaults: true,
-  oneofs: true,
+  oneofs: true
 });
-
 const grpcObject = grpc.loadPackageDefinition(packageDefinition) as any;
-const notificationPackage = grpcObject.notification;
-
-const notificationService = {
-  StreamLowStock: (call: grpc.ServerWritableStream<any, any>) => {
-    call.on('data', (alert: any) => {
-      console.log(`Alerta de estoque baixo: [${alert.productId}] ${alert.name} - Qtd: ${alert.quantity}`);
-    });
-
-    call.on('end', () => {
-      call.write({ status: 'Alerta recebido com sucesso' });
-      call.end();
-    });
-  }
-};
+const orderPackage = grpcObject.order;
 
 const server = new grpc.Server();
-server.addService(notificationPackage.NotificationService.service, notificationService);
+server.addService(orderPackage.OrderService.service, orderController);
 
-const PORT = 50053;
+const PORT = 50052;
 server.bindAsync(`0.0.0.0:${PORT}`, grpc.ServerCredentials.createInsecure(), () => {
   console.log(`Order service is running: order-service:${PORT}`);
 });
